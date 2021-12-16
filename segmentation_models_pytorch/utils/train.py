@@ -42,7 +42,9 @@ class Epoch:
         metrics_meters = {metric.__name__: AverageValueMeter() for metric in self.metrics}
 
         with tqdm(dataloader, desc=self.stage_name, file=sys.stdout, disable=not (self.verbose)) as iterator:
-            for x, y in iterator:
+            for x, y, _ in iterator:
+                x = torch.stack(x)
+                y = torch.stack(y).long()
                 x, y = x.to(self.device), y.to(self.device)
                 loss, y_pred = self.batch_update(x, y)
 
